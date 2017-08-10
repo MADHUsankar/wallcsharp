@@ -1,0 +1,46 @@
+<p>Welcome @ViewBag.username</p>
+
+<h3> Post a Message</h3>
+ <form action='/processmessage' method='post'>
+     <p> Message: <textarea rows="4" cols="50" name='Messagescontent'></textarea>            </p>
+          <input type="hidden" name="action" value="postmsg">
+          <input type='submit' name='postmsg' value='Post message'>
+           
+    </p>
+    </form>
+    <div>
+    @{
+        if (@ViewBag.status=="msgfail"){
+        foreach(var error in ViewBag.errors)
+            {
+                if(@error.Errors.Count > 0)
+                {
+                    <p>@error.Errors[0].ErrorMessage</p>
+                }
+            }
+    
+    }
+    }
+       </div>
+    <h1> Messages so far</h1>
+      @foreach ( var msgone in @ViewBag.allmessagess){
+     <p> @msgone["Messagescontent"]</p>
+     <p> Posted by : @msgone["FirstName"]</p>
+     <p>Posted at : @msgone["createdat"]</p>
+     <h2> Comments so far</h2>
+      @foreach ( var cmtone in @ViewBag.allcomments){
+          if (@cmtone["Messages_idMessages"] == @msgone["idMessages"]){
+                <p> @cmtone["Commentscontent"]</p>
+                <p> Posted by : @cmtone["FirstName"]</p>
+                <p>Posted at : @cmtone["createdat"]</p>
+      }}
+     <form action = '/processcmt' method="post">
+                <input type = "hidden" name = 'Messages_idMessages' value =  @msgone["idMessages"]>
+                Comments: <textarea rows="5" cols="80"  name="Commentscontent">
+                </textarea> <br> <br>
+                <input type="hidden" name="action" value="postcmt">
+                <tr> <input type = "submit"  name = 'postcmt' value = 'Post the comment'> </tr>
+            </form>
+     <hr>
+ } 
+     <p><a href='/logout'>Logout</a></p>
